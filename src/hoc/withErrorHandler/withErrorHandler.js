@@ -44,7 +44,6 @@ const withErrorHandler = (WrappedComponent, axios) => {
             </Auxilliary>
             )
         }
-        
     }
 }
 

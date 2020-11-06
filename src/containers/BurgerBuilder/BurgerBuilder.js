@@ -72,9 +72,15 @@ class BurgerBuilder extends Component {
     // }
 
     purchaseHandler = () => {
-        this.setState({
+        if(this.props.isAuthenticated) {
+            this.setState({
             purchasing: true
         })
+        } else {
+            this.props.onSetAuthRedirectPath('/checkout')
+            this.props.history.push('/auth')
+        }
+        
     }
 
     purchaseCancelHendler = () => {
@@ -136,11 +142,12 @@ class BurgerBuilder extends Component {
         //     .catch(err => {
         //         this.setState({error: true})
         //     })
-        this.props.onInitIngredients()
+        
+            this.props.onInitIngredients()
+        
     }
 
     render() {
-
         const disabledInfo = {
             ...this.props.ings
         }
@@ -163,6 +170,7 @@ class BurgerBuilder extends Component {
                         ingredientAdded={this.props.onIngredientAdded}
                         purchaseable={this.updatePurchaseState(this.props.ings)}
                         ordered={this.purchaseHandler}
+                        isAuth={this.props.isAuthenticated}
                         price={this.props.price}
                         />
                         </Auxilliary>
@@ -191,7 +199,8 @@ const mapStateToProps = state => {
     return {
         ings: state.burger.ingredients,
         price: state.burger.totalPrice,
-        error:state.burger.error
+        error:state.burger.error,
+        isAuthenticated: state.auth.token,
     }
 }
 
@@ -200,8 +209,8 @@ const mapDispatchToProps = dispatch => {
         onIngredientAdded: (ingName) => dispatch(actions.addIngredient(ingName)),
         onIngredientRemoved: (ingName) => dispatch(actions.removeIngredient(ingName)),
         onInitIngredients: () => dispatch(actions.initIngredients()),
-        onInitPurchase:() => dispatch(actions.purchaseInit())
-
+        onInitPurchase:() => dispatch(actions.purchaseInit()),
+        onSetAuthRedirectPath: (path) => dispatch(actions.setAuthRediredctPath(path))
     }
 }
 
